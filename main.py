@@ -3,13 +3,22 @@ import requests
 from bs4 import BeautifulSoup
 from prettytable import PrettyTable
 
-
 # ------------------------------------------------------------------------
 # USER DEFINED FUNCTIONS
 # ------------------------------------------------------------------------
 
+
 # Function to Format the user input name
 def format_book_name(user_input):
+  """
+  Formats the name of the book such that it can be passed as query parameter
+  in the website url.
+  Example: Book Name -> sherlock holmes. Formatted String -> sherlock+holmes
+  Parameters:
+    user_input: string
+  Returns:
+    formatted_book_name: string
+  """
   # Replace multiple consecutive spaces with a single space
   cleaned_input = ' '.join(user_input.split())
 
@@ -21,6 +30,11 @@ def format_book_name(user_input):
 
 # Function to get user choice
 def get_user_choice():
+  """
+  Gets the user choice after a menu has been printed based on the book name
+  Returns:
+    user_choice: integer
+  """
   print()
   choice = int(input("Enter serial number for your choice(e.g. 1): "))
   return choice
@@ -28,6 +42,11 @@ def get_user_choice():
 
 # Function to print a dictionary that contains book information
 def print_dict(book_info):
+  """
+  Prints the book information with each key and its value in a new line.
+  Parameter:
+    book_info: dictionary
+  """
   for key in book_info:
     print(f"{key}: {book_info[key]}")
   print()
@@ -35,17 +54,35 @@ def print_dict(book_info):
 
 # Function to print info of all books in the form of a table
 def print_table(link_list):
+  """
+  Prints the book information in a table format using PrettyTable library.
+  Parameter:
+    link_list: list of URLs
+  (WORK IN PROGRESS)
+  """
   table = PrettyTable()
-  table.field_names = ["Index", "Title", "Author", "Genre", "Ratings", "Summary"]
+  table.field_names = [
+      "Index", "Title", "Author", "Genre", "Ratings", "Summary"
+  ]
   for i in range(0, len(link_list)):
     link_ = f"https://www.goodreads.com{link_list[i]}"
     book = scrape_book_info(link_)
-    table.add_row([i+1, book['Title'], book['Author'], book['Genre'], book['Ratings'], book['Summary']])
+    table.add_row([
+        i + 1, book['Title'], book['Author'], book['Genre'], book['Ratings'],
+        book['Summary']
+    ])
   print(table)
 
 
 # Function to Scrap the Website
 def scrape_book_info(book_url):
+  """
+  Scrapes the book information from the website and returns a dictionary with the keys: title, author, genre, ratings, and summary.
+  Parameter:
+    book_url: string (URL of the book)
+  Returns:
+    book_info: dictionary
+  """
   # Make an HTTP request to the book URL
   response = requests.get(book_url)
   soup = BeautifulSoup(response.text, 'html.parser')
@@ -76,16 +113,21 @@ def scrape_book_info(book_url):
   # reviews = soup.find('span', {'itemprop': 'reviewCount'}).text.strip()
 
   return {
-    'Title': title,
-    'Author': author,
-    'Genre': genre,
-    'Ratings': ratings,
-    'Summary': summary
+      'Title': title,
+      'Author': author,
+      'Genre': genre,
+      'Ratings': ratings,
+      'Summary': summary
   }
 
 
 # Function to scrape all books in the list
 def scrape_all(link_list):
+  """
+  Runs a loop to scrape all the books in the list by calling the scrape_book_info function.
+  Parameter:
+    link_list: list of URLs
+  """
   for i in range(0, len(link_list)):
     link_ = f"https://www.goodreads.com{link_list[i]}"
     book_info = scrape_book_info(link_)
@@ -94,6 +136,11 @@ def scrape_all(link_list):
 
 # Function to Return List of all Books with this Name
 def get_book_list(search_url):
+  """
+  Fetches a list of book URLs from the search results page based on the keywords entered by the user. Aslo gets the list of corresponding links.
+  Parameters:
+    search_url: string (URL of the search results page)
+  """
   # send the request
   response = requests.get(search_url)
   # parse the HTML response received
