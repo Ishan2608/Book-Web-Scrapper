@@ -147,6 +147,13 @@ def get_book_list(search_url):
   soup = BeautifulSoup(response.text, 'html.parser')
   # parse the response and find the required element
   left = soup.find('div', {'class': 'leftContainer'})
+  check = soup.find('h3', {'class': 'searchSubNavContainer'}).text.strip()
+
+  # Check if the website returned any list of books
+  if (check == 'No results.'):
+    print("No results found for this search. 😭😭😭😭😭")
+    return
+    
   tlist = left.find('table', {'class': 'tableList'})
 
   # Initialize a list to store the texts
