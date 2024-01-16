@@ -19,57 +19,10 @@ def format_book_name(user_input):
   return formatted_input
 
 
-# Function to Return List of all Books with this Name
-def get_book_list(search_url):
-  # send the request
-  response = requests.get(search_url)
-  # parse the HTML response received
-  soup = BeautifulSoup(response.text, 'html.parser')
-  # parse the response and find the required element
-  left = soup.find('div', {'class': 'leftContainer'})
-  tlist = left.find('table', {'class': 'tableList'})
-
-  # Initialize a list to store the texts
-  anchor_texts = []
-  anchor_hrefs = []
-
-  # Process each row in the tbody
-  for row in tlist.find_all('tr', recursive=False):
-    # Find the second td tag in the row
-    second_td = row.find_all('td')[1]
-
-    # Find the anchor tag inside the second td
-    anchor_tag = second_td.find('a')
-
-    # Get the anchor text and href
-    anchor_text = anchor_tag.text.strip()
-    anchor_href = anchor_tag['href']
-
-    # Append the anchor text and href to the respective lists
-    anchor_texts.append(anchor_text)
-    anchor_hrefs.append(anchor_href)
-
-  print("0 - Show Info for ALL")
-  for ind in range(0, len(anchor_texts)):
-    print(f"{ind + 1} - {anchor_texts[ind]}")
-
-  print()
-  
-  choice = get_user_choice() - 1
-  if (choice == -1):
-    scrape_all(anchor_hrefs)
-    # print_table(anchor_hrefs)
-    
-  else:
-    book_link = anchor_hrefs[choice]
-    link = f"https://www.goodreads.com{book_link}"
-    book_info = scrape_book_info(link)
-    print_dict(book_info)
-  
-
 # Function to get user choice
 def get_user_choice():
-  choice = int(input("Enter serial number for your choice: "))
+  print()
+  choice = int(input("Enter serial number for your choice(e.g. 1): "))
   return choice
 
 
@@ -80,23 +33,14 @@ def print_dict(book_info):
   print()
 
 
-# Function to scrape all books in the list
-def scrape_all(link_list):
-  for i in range(0, len(link_list)):
-    link_ = f"https://www.goodreads.com{link_list[i]}"
-    book_info = scrape_book_info(link_)
-    print_dict(book_info)
-
-
 # Function to print info of all books in the form of a table
 def print_table(link_list):
   table = PrettyTable()
   table.field_names = ["Index", "Title", "Author", "Genre", "Ratings", "Summary"]
   for i in range(0, len(link_list)):
     link_ = f"https://www.goodreads.com{link_list[i]}"
-    book_info = scrape_book_info(link_)
-    table.add_row([i+1, book_info['Title'], book_info['Author'], book_info['Genre'], book_info['Ratings'], book_info['Summary']])
-    
+    book = scrape_book_info(link_)
+    table.add_row([i+1, book['Title'], book['Author'], book['Genre'], book['Ratings'], book['Summary']])
   print(table)
 
 
@@ -138,6 +82,62 @@ def scrape_book_info(book_url):
     'Ratings': ratings,
     'Summary': summary
   }
+
+
+# Function to scrape all books in the list
+def scrape_all(link_list):
+  for i in range(0, len(link_list)):
+    link_ = f"https://www.goodreads.com{link_list[i]}"
+    book_info = scrape_book_info(link_)
+    print_dict(book_info)
+
+
+# Function to Return List of all Books with this Name
+def get_book_list(search_url):
+  # send the request
+  response = requests.get(search_url)
+  # parse the HTML response received
+  soup = BeautifulSoup(response.text, 'html.parser')
+  # parse the response and find the required element
+  left = soup.find('div', {'class': 'leftContainer'})
+  tlist = left.find('table', {'class': 'tableList'})
+
+  # Initialize a list to store the texts
+  anchor_texts = []
+  anchor_hrefs = []
+
+  # Process each row in the tbody
+  for row in tlist.find_all('tr', recursive=False):
+    # Find the second td tag in the row
+    second_td = row.find_all('td')[1]
+
+    # Find the anchor tag inside the second td
+    anchor_tag = second_td.find('a')
+
+    # Get the anchor text and href
+    anchor_text = anchor_tag.text.strip()
+    anchor_href = anchor_tag['href']
+
+    # Append the anchor text and href to the respective lists
+    anchor_texts.append(anchor_text)
+    anchor_hrefs.append(anchor_href)
+
+  print("0 - Show Info for ALL")
+  for ind in range(0, len(anchor_texts)):
+    print(f"{ind + 1} - {anchor_texts[ind]}")
+
+  print()
+
+  choice = get_user_choice() - 1
+  if (choice == -1):
+    scrape_all(anchor_hrefs)
+    # print_table(anchor_hrefs)
+
+  else:
+    book_link = anchor_hrefs[choice]
+    link = f"https://www.goodreads.com{book_link}"
+    book_info = scrape_book_info(link)
+    print_dict(book_info)
 
 
 # ------------------------------------------------------------------------
