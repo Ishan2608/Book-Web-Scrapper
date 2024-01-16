@@ -1,6 +1,7 @@
 # Import required libraries
 import requests
 from bs4 import BeautifulSoup
+from prettytable import PrettyTable
 
 
 # ------------------------------------------------------------------------
@@ -57,13 +58,14 @@ def get_book_list(search_url):
   choice = get_user_choice() - 1
   if (choice == -1):
     scrape_all(anchor_hrefs)
+    # print_table(anchor_hrefs)
     
   else:
     book_link = anchor_hrefs[choice]
     link = f"https://www.goodreads.com{book_link}"
-    scrape_book_info(link)
+    book_info = scrape_book_info(link)
+    print_dict(book_info)
   
-
 
 # Function to get user choice
 def get_user_choice():
@@ -71,11 +73,32 @@ def get_user_choice():
   return choice
 
 
+# Function to print a dictionary that contains book information
+def print_dict(book_info):
+  for key in book_info:
+    print(f"{key}: {book_info[key]}")
+  print()
+
+
 # Function to scrape all books in the list
 def scrape_all(link_list):
-  for link in link_list:
-    link_ = f"https://www.goodreads.com{link}"
-    scrape_book_info(link_)
+  for i in range(0, len(link_list)):
+    link_ = f"https://www.goodreads.com{link_list[i]}"
+    book_info = scrape_book_info(link_)
+    print_dict(book_info)
+
+
+# Function to print info of all books in the form of a table
+def print_table(link_list):
+  table = PrettyTable()
+  table.field_names = ["Index", "Title", "Author", "Genre", "Ratings", "Summary"]
+  for i in range(0, len(link_list)):
+    link_ = f"https://www.goodreads.com{link_list[i]}"
+    book_info = scrape_book_info(link_)
+    table.add_row([i+1, book_info['Title'], book_info['Author'], book_info['Genre'], book_info['Ratings'], book_info['Summary']])
+    
+  print(table)
+
 
 # Function to Scrap the Website
 def scrape_book_info(book_url):
@@ -108,15 +131,13 @@ def scrape_book_info(book_url):
 
   # reviews = soup.find('span', {'itemprop': 'reviewCount'}).text.strip()
 
-  # Display the information
-  print("-------------------------------------------------------------")
-  print(f'Title: {title}')
-  print(f'Author: {author}')
-  print(f'Genre: {genre}')
-  print(f'Ratings: {ratings}')
-  print(f'Summary:\n{summary}')
-  print("-------------------------------------------------------------")
-  # print(f'Reviews: {reviews}')
+  return {
+    'Title': title,
+    'Author': author,
+    'Genre': genre,
+    'Ratings': ratings,
+    'Summary': summary
+  }
 
 
 # ------------------------------------------------------------------------
