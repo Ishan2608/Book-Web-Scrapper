@@ -48,15 +48,20 @@ def get_book_list(search_url):
     anchor_texts.append(anchor_text)
     anchor_hrefs.append(anchor_href)
 
+  print("0 - Show Info for ALL")
   for ind in range(0, len(anchor_texts)):
     print(f"{ind + 1} - {anchor_texts[ind]}")
 
   print()
   
   choice = get_user_choice() - 1
-  book_link = anchor_hrefs[choice]
-  link = f"https://www.goodreads.com{book_link}"
-  scrape_book_info(link)
+  if (choice == -1):
+    scrape_all(anchor_hrefs)
+    
+  else:
+    book_link = anchor_hrefs[choice]
+    link = f"https://www.goodreads.com{book_link}"
+    scrape_book_info(link)
   
 
 
@@ -65,6 +70,12 @@ def get_user_choice():
   choice = int(input("Enter serial number for your choice: "))
   return choice
 
+
+# Function to scrape all books in the list
+def scrape_all(link_list):
+  for link in link_list:
+    link_ = f"https://www.goodreads.com{link}"
+    scrape_book_info(link_)
 
 # Function to Scrap the Website
 def scrape_book_info(book_url):
@@ -98,11 +109,13 @@ def scrape_book_info(book_url):
   # reviews = soup.find('span', {'itemprop': 'reviewCount'}).text.strip()
 
   # Display the information
+  print("-------------------------------------------------------------")
   print(f'Title: {title}')
   print(f'Author: {author}')
   print(f'Genre: {genre}')
   print(f'Ratings: {ratings}')
   print(f'Summary:\n{summary}')
+  print("-------------------------------------------------------------")
   # print(f'Reviews: {reviews}')
 
 
