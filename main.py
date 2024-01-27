@@ -1,7 +1,6 @@
 # Import required libraries
 import requests
 from bs4 import BeautifulSoup
-from prettytable import PrettyTable
 
 # ------------------------------------------------------------------------
 # USER DEFINED FUNCTIONS
@@ -153,7 +152,7 @@ def get_book_list(search_url):
   if (check == 'No results.'):
     print("No results found for this search. 😭😭😭😭😭")
     return
-    
+
   tlist = left.find('table', {'class': 'tableList'})
 
   # Initialize a list to store the texts
