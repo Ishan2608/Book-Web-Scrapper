@@ -6,6 +6,7 @@ from bs4 import BeautifulSoup
 # USER DEFINED FUNCTIONS
 # ------------------------------------------------------------------------
 
+
 # Function to Format the user input name
 def format_book_name(user_input):
     """
@@ -180,7 +181,7 @@ def get_book_list(search_url):
 # PROGRAM WORKFLOW
 # ------------------------------------------------------------------------
 
-# Example usage:
+# Ask User to Input a Book Name:
 user_input = input("Enter the name of a book: ")
 formatted_book_name = format_book_name(user_input)
 
