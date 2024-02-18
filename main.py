@@ -51,28 +51,6 @@ def print_dict(book_info):
   print()
 
 
-# Function to print info of all books in the form of a table
-def print_table(link_list):
-  """
-  Prints the book information in a table format using PrettyTable library.
-  Parameter:
-    link_list: list of URLs
-  (WORK IN PROGRESS)
-  """
-  table = PrettyTable()
-  table.field_names = [
-      "Index", "Title", "Author", "Genre", "Ratings", "Summary"
-  ]
-  for i in range(0, len(link_list)):
-    link_ = f"https://www.goodreads.com{link_list[i]}"
-    book = scrape_book_info(link_)
-    table.add_row([
-        i + 1, book['Title'], book['Author'], book['Genre'], book['Ratings'],
-        book['Summary']
-    ])
-  print(table)
-
-
 # Function to Scrap the Website
 def scrape_book_info(book_url):
   """
@@ -142,6 +120,12 @@ def get_book_list(search_url):
   """
   # send the request
   response = requests.get(search_url)
+
+  # handle request rejection
+  if(response.status_code != 200):
+    print("Book Not Found!!!")
+    return
+  
   # parse the HTML response received
   soup = BeautifulSoup(response.text, 'html.parser')
   # parse the response and find the required element
