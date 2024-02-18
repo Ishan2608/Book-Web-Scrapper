@@ -2,6 +2,9 @@
 A simple program that takes name of a book from the user, searches the Good Reads website for results, and shows details of all the books in the list returned by Good Reads, or, shows information of one specific book that user wants. 
 The entire program gets its information from Good Reads using web scrapping technique implemented using the BeautifulSoup library.
 
+## Code Ouput
+![Code Output](./Book_Scrapper_Output.gif)
+
 ## View the Project on [Replit](https://replit.com/@ishandeveloperg/Book-Web-Scrapper)
 
 ## Things to Note:
